@@ -1,0 +1,8 @@
+# Notas y progreso personales (no se suben)
+notas/
+progreso.md
+
+# Basura
+*.bak
+*.swp
+.DS_Store

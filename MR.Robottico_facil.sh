@@ -999,7 +999,15 @@ menu_maquina() {
     case "$op" in
       1) pedir_objetivo && { printf '\n'; "rm_${id}_recon"; pausa; } ;;
       2) pedir_objetivo && { printf '\n'; "rm_${id}_pistas"; pausa; } ;;
-      3) pedir_objetivo && { printf '\n'; "rm_${id}_quiz"; pausa; } ;;
+      3) pedir_objetivo && {
+        if declare -F "rm_${id}_quiz" >/dev/null 2>&1; then
+          printf '\n'
+          "rm_${id}_quiz"
+        else
+          aviso "Esta máquina todavía no tiene reto."
+        fi
+        pausa
+      } ;;
       4) pedir_objetivo && { printf '\n'; "rm_${id}_recon"; printf '\n'; "rm_${id}_pistas"; pausa; } ;;
       5) abrir_notas "$id" ;;
       6) printf '  Nueva IP: '; IFS= read -r RHOST || true ;;
@@ -1153,7 +1161,15 @@ if [ -n "$MAQ" ]; then
   case "$ACCION" in
     recon) "rm_${id}_recon"; RC=$? ;;
     pistas) "rm_${id}_pistas"; RC=$? ;;
-    quiz) "rm_${id}_quiz"; RC=$? ;;
+    quiz)
+      if declare -F "rm_${id}_quiz" >/dev/null 2>&1; then
+        "rm_${id}_quiz"
+        RC=$?
+      else
+        error "La máquina '$id' todavía no tiene reto"
+        RC=1
+      fi
+      ;;
     "") "rm_${id}_recon"; RC=$?; printf '\n'; "rm_${id}_pistas" ;;
     *) error "Acción desconocida: $ACCION"; exit 1 ;;
   esac

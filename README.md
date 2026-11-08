@@ -153,7 +153,7 @@ La opción `[H] Herramientas / Termux` del menú tiene la chuleta completa.
 
 ## Añadir una máquina
 
-Todo está en el mismo archivo. Añade tres cosas:
+Todo está en el mismo archivo. Añade **cuatro** cosas:
 
 1. La línea `add` en el bloque de metadatos:
 
@@ -161,14 +161,18 @@ Todo está en el mismo archivo. Añade tres cosas:
 add mimquina "MiMaquina" "Retirada · Easy" "Linux" "Easy" "80/tcp" "web · upload"
 ```
 
-2. Sus dos funciones:
+2. El reconocimiento:
 
 ```bash
 rm_mimaquina_recon() {
   necesita nmap || return
   ejecutar "nmap -sV -Pn -p- --min-rate 2000 $RHOST"
 }
+```
 
+3. Las pistas:
+
+```bash
 rm_mimaquina_pistas() {
   msg "MiMaquina — pista general"
   pista "Paso 1..."
@@ -176,10 +180,28 @@ rm_mimaquina_pistas() {
 }
 ```
 
-3. Nada más: el menú la detecta automáticamente.
+4. El reto (preguntas + flag):
+
+```bash
+rm_mimaquina_quiz() {
+  QUIZ_OK=0; QUIZ_TOTAL=0; QUIZ_FALLOS=0
+  msg "Reto — MiMaquina"
+  pregunta "¿Qué servicio atacas?" "HTTP (80)" "FTP (21)" "SMB (445)" "Redis (6379)"
+  pregunta "¿Qué herramienta usas?" "gobuster" "hydra" "sqlmap" "ffuf"
+  pregunta "¿Qué vulnerabilidad explotas?" "Upload sin validación" "SQLi" "LFI" "XSS"
+  resumen_quiz "mimaquina"
+}
+```
+
+Nada más: el menú la detecta automáticamente. Si te falta el `quiz`, la
+opción `[3] Reto` avisa en vez de romperse.
+
+Formato de `pregunta`: texto, respuesta correcta y 3 distractores. Las opciones
+se mezclan solas en cada intento.
 
 Variables disponibles: `$RHOST` (IP objetivo), `$AUTO`, `$(lhost)`, y los helpers
-`necesita`, `ejecutar`, `pista`, `paso`, `msg`, `ok`, `aviso`, `error`, `tenue`.
+`necesita`, `ejecutar`, `pista`, `paso`, `msg`, `ok`, `aviso`, `error`, `tenue`,
+`pregunta` y `resumen_quiz`.
 
 ---
 
@@ -190,7 +212,7 @@ Variables disponibles: `$RHOST` (IP objetivo), `$AUTO`, `$(lhost)`, y los helper
 2. Desde Termux:
 
 ```bash
-cd mr_robottico_facil
+cd ~/mr_robottico_facil
 chmod +x subir.sh
 ./subir.sh holamecracktino-spec
 ```
